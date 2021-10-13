@@ -7,10 +7,10 @@ import myEpicNft from './utils/MyEpicNFT.json'
 // Constants
 const TWITTER_HANDLE = '1HiveOrg';
 const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
-const OPENSEA_LINK = 'https://testnets.opensea.io/collection/squarenft-ivggwbsiec';
+const OPENSEA_LINK = 'https://testnets.opensea.io/collection/beenft';
 const TOTAL_MINT_COUNT = 50;
-//const CONTRACT_ADDRESS = "0xbD0AFf2785a5B752B421459aD6eDf13632d509De";
-const CONTRACT_ADDRESS = "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266";
+const CONTRACT_ADDRESS = "0x0f19375B62D49ffd14FE53565f9E38281bD8e158";
+//const CONTRACT_ADDRESS = "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266";
 const App = () => {
 
   /*
