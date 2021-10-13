@@ -13,10 +13,9 @@ const CONTRACT_ADDRESS = "0x0f19375B62D49ffd14FE53565f9E38281bD8e158";
 //const CONTRACT_ADDRESS = "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266";
 const App = () => {
 
-  /*
-    * Just a state variable we use to store our user's public wallet.
-    */
+  
   const [currentAccount, setCurrentAccount] = useState("");
+  const [chainId, setChainId] = useState(window.ethereum.request({ method: 'eth_chainId' }));
 
   const checkIfWalletIsConnected = async () => {
     /*
@@ -31,7 +30,15 @@ const App = () => {
       console.log("We have the ethereum object", ethereum);
     }
 
-    const accounts = await ethereum.request({ method: "eth_accounts"});
+    const accounts = await ethereum.request({ method: 'eth_accounts' });
+    //check network?
+    //find this chain id
+    const chain = await window.ethereum.request({method: 'eth_chainId'});
+    //chainId = chain;
+    console.log("chain ID:", chain)
+    console.log("global Chain Id:", chainId)
+
+
 
     /*
       * User can have multiple authorized accounts, we grab the first one if its there!
@@ -133,6 +140,42 @@ const App = () => {
       }
   }
 
+  const changeNetwork = async () => {
+
+    const { ethereum } = window;
+
+    try {
+      await ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: '0x4' }],
+      });
+
+
+    } catch (switchError) {
+      // This error code indicates that the chain has not been added to MetaMask.
+      if (switchError.code === 4902) {
+        try {
+          await ethereum.request({
+            method: 'wallet_addEthereumChain',
+            params: [{ chainId: '0x4', rpcUrl: 'https://rinkeby-light.eth.linkpool.io/' /* ... */ }],
+          });
+        } catch (addError) {
+          // handle "add" error
+        }
+      }
+      // handle other "switch" errors
+    }
+  }
+
+
+  useEffect(() => {
+    async function getChainId() {
+      const ethChainId = await window.ethereum.request({ method: 'eth_chainId' })
+      setChainId(ethChainId)
+    }
+  
+    getChainId()
+  }, [])
   /*
   * This runs our function when the page loads.
   */
@@ -167,6 +210,19 @@ const App = () => {
           </p>
           {currentAccount === "" ? renderNotConnectedContainer() : renderMintUI()}
         </div>
+
+        { chainId === '0x4' ? null :(  
+          <div className="sub-text">
+          <div>You are not connected to Rinkeby network.</div> 
+          <div> Please change the network you are connected to in your wallet. </div>
+            <div>
+             <button className="cta-button connect-wallet-button" onClick={changeNetwork}>
+             Change to Rinkeby
+            </button>
+            </div>
+        </div>
+        )}
+
         <div>
           <p className="sub-text">
           <a
