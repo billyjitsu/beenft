@@ -3,6 +3,7 @@ import { ethers } from 'ethers'
 import twitterLogo from './assets/twitter-logo.svg';
 import React, { useEffect, useState } from "react";
 import myEpicNft from './utils/MyEpicNFT.json'
+import PreLoader1 from "./components/PreLoader1";
 
 // Constants
 const TWITTER_HANDLE = '1HiveOrg';
@@ -250,7 +251,7 @@ const App = () => {
             </div>
         </div>
         )}
-
+          
         <div>
           <p className="sub-text">
           <a
