@@ -23,13 +23,16 @@ contract MyEpicNFT is ERC721URIStorage {
   string svgPartOne = "<svg xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='xMinYMin meet' viewBox='0 0 350 350'><style>.base { fill: white; font-family: serif; font-size: 24px; }</style><rect width='100%' height='100%' fill='";
   string svgPartTwo = "'/><text x='50%' y='50%' class='base' dominant-baseline='middle' text-anchor='middle'>";
 
-  // I create three arrays, each with their own theme of random words. 
+  //create three arrays, each with their own theme of random words. 
   string[] firstWords = ["Active", "Hopeful", "Reckless", "Noisy", "Slow", "Shadowy"];
   string[] secondWords = ["American", "Euro", "1Hive", "Super", "Nerdy", "Geeky"];
   string[] thirdWords = ["Bee", "Wasp", "Honeybee", "Winner", "Coder", "Elite"];
 
   // colors.
   string[] colors = ["red", "#08C2A8", "black", "yellow", "blue", "green"];
+
+  //set a max mint
+  uint256 maxMint = 50;
 
   //Emit even to send out token ID  
   event NewEpicNFTMinted(address sender, uint256 tokenId);
@@ -76,6 +79,9 @@ contract MyEpicNFT is ERC721URIStorage {
   function makeAnEpicNFT() public {
      // Get the current tokenId, this starts at 0.
     uint256 newItemId = _tokenIds.current();
+
+    //requirement that is is less than few mints
+    require(newItemId < maxMint, "Mint capacity reached");
 
     // We go and randomly grab one word from each of the three arrays.
     string memory first = pickRandomFirstWord(newItemId);
@@ -125,5 +131,10 @@ contract MyEpicNFT is ERC721URIStorage {
 
     //emit event
     emit NewEpicNFTMinted(msg.sender, newItemId);
+  }
+
+  function totalMints() public view returns (uint256) {
+    uint256 totalNfts = _tokenIds.current();
+    return totalNfts;
   }
 }

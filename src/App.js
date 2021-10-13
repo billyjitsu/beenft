@@ -7,15 +7,16 @@ import myEpicNft from './utils/MyEpicNFT.json'
 // Constants
 const TWITTER_HANDLE = '1HiveOrg';
 const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
-const OPENSEA_LINK = 'https://testnets.opensea.io/collection/beenft';
+const OPENSEA_LINK = 'https://testnets.opensea.io/collection/beenft-v2';
 const TOTAL_MINT_COUNT = 50;
-const CONTRACT_ADDRESS = "0x0f19375B62D49ffd14FE53565f9E38281bD8e158";
-//const CONTRACT_ADDRESS = "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266";
+//const CONTRACT_ADDRESS = "0x0f19375B62D49ffd14FE53565f9E38281bD8e158";
+const CONTRACT_ADDRESS = "0xf796bcF5C1Da589576CA1CE42c5df05965cD07ac";
 const App = () => {
 
   
   const [currentAccount, setCurrentAccount] = useState("");
   const [chainId, setChainId] = useState(window.ethereum.request({ method: 'eth_chainId' }));
+  const [mintTotal, setMintTotal] = useState(0);
 
   const checkIfWalletIsConnected = async () => {
     /*
@@ -50,6 +51,7 @@ const App = () => {
       // Setup listener! This is for the case where a user comes to our site
       // and ALREADY had their wallet connected + authorized.
       setupEventListener()
+      mintsSoFar()
     } else {
       console.log("No authorized account found")
     }
@@ -167,6 +169,29 @@ const App = () => {
     }
   }
 
+  const mintsSoFar = async () => {
+    try {
+      const { ethereum } = window;
+
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const connectedContract = new ethers.Contract(CONTRACT_ADDRESS, myEpicNft.abi, signer);
+
+        let totalMints = await connectedContract.totalMints();
+        setMintTotal(totalMints.toNumber());
+        console.log('Mints so far:', totalMints.toNumber())
+        
+        
+
+      } else {
+        console.log("Ethereum object doesn't exist!");
+      }
+    } catch (error) {
+      console.log(error)
+    }
+
+  }
 
   useEffect(() => {
     async function getChainId() {
@@ -207,6 +232,9 @@ const App = () => {
           <p className="header gradient-text">1Hive's Bee NFT Mint Shop</p>
           <p className="sub-text">
             A Collection of Bees. Each one unique.  Mint yours now.
+          </p>
+          <p className="sub-text">
+            Total Mints: {mintTotal}/50
           </p>
           {currentAccount === "" ? renderNotConnectedContainer() : renderMintUI()}
         </div>
